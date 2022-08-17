@@ -33,6 +33,7 @@ const Home = ({
   const setMessageListData = async () => {
     setMessages(await getMessages(selectedRoom));
   };
+
   useMemo(() => {
     setMessageListData();
   }, [messageSession, selectedRoom]);

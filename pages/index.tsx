@@ -30,11 +30,11 @@ export default function Home() {
 
   return (
     <div className="h-full">
-      {/* {session ? (
+      {session ? (
         <HomeComponent user={session.user} messageSession={messageSession} />
       ) : (
-      )} */}
-      <Form isRegisterPage={false} />
+        <Form isRegisterPage={false} />
+      )}
     </div>
   );
 }
