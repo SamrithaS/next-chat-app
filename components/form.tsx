@@ -10,7 +10,7 @@ const Form: React.FC<Props> = ({ isRegisterPage }) => {
   const router = useRouter();
   const [userDetails, setUser] = useState<{
     name: string | number;
-    email: string | number;
+    email: string;
     password: string | number;
   }>({
     name: "",
