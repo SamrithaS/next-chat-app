@@ -7,4 +7,8 @@ const supabaseAnonKey: string | undefined =
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error("supabaseUrl or supabaseAnonKey not defined");
 }
+
+console.log("supabaseUrl", supabaseUrl);
+console.log("supabaseAnonKey", supabaseAnonKey);
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
