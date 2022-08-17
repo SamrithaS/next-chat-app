@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { supabase } from "../helpers/supabase";
 
 function MyApp({ Component, pageProps }: AppProps) {
- 
   return <Component {...pageProps} />;
 }
 
