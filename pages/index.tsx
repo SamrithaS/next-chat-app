@@ -5,11 +5,11 @@ import HomeComponent from "../components/home";
 import { userType } from "../types/types";
 
 export default function Home() {
-  const [session, setSession] = useState<{ user: userType }>();
+  const [session, setSession] = useState<any>();
   const [messageSession, setMessageSession] = useState();
 
   useEffect(() => {
-    setSession(supabase.auth.session());
+    setSession(supabase.auth.session() as any);
     supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setSession(session);
     });
@@ -17,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     const subscription = supabase
       .from("message")
-      .on("INSERT", (payload) => {
+      .on("INSERT", (payload: any) => {
         setMessageSession(payload);
       })
       .subscribe();

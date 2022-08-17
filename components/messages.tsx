@@ -6,7 +6,7 @@ import getBgColor from "../helpers/getbgColor";
 const Messages = ({
   userID,
   messages,
-  selectedRoomName
+  selectedRoomName,
 }: {
   userID: string;
   messages: MessageType[];
@@ -43,7 +43,7 @@ const Messages = ({
               return (
                 <li
                   key={id}
-                  id={id}
+                  id={`${id}`}
                   className={`flex p-2 space-x-3 items-start ${
                     message.profile_id === userID
                       ? "justify-end"

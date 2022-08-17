@@ -25,7 +25,7 @@ const Home = ({
     setSelectedRoom(data?.[0]?.id || "");
     setRooms(data);
   };
-  
+
   useEffect(() => {
     setRoomListData();
   }, []);
@@ -39,12 +39,8 @@ const Home = ({
 
   const onSignOut = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw new Error(error);
-    } catch (error) {
-      alert(error);
-    }
+    const { error } = await supabase.auth.signOut();
+    if (error) alert(error);
   };
 
   const handleEnter = async (event: React.KeyboardEvent<HTMLInputElement>) => {
