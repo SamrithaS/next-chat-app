@@ -11,7 +11,7 @@ const Form: React.FC<Props> = ({ isRegisterPage }) => {
   const [userDetails, setUser] = useState<{
     name: string | number;
     email: string;
-    password: string | number;
+    password: string;
   }>({
     name: "",
     email: "",
