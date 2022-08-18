@@ -9,7 +9,7 @@ const Channels = ({
   isInputTrue,
   setIsInputTrue,
   rooms,
-  getRooms,
+  setRoomListData,
   selectedRoom,
   setSelectedRoom,
 }: {
@@ -18,7 +18,7 @@ const Channels = ({
   rooms: RoomType[];
   setSelectedRoom: Dispatch<SetStateAction<string>>;
   selectedRoom: string;
-  getRooms: () => void;
+  setRoomListData: () => void;
 }) => {
   const inputRef = useRef(null);
 
@@ -28,7 +28,7 @@ const Channels = ({
         .from("rooms")
         .insert({ name: e.target.value }, { returning: "minimal" });
       if (!error) {
-        getRooms();
+        setRoomListData();
       }
       setIsInputTrue(false);
       if (error) alert(error);

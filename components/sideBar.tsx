@@ -7,14 +7,14 @@ type Dispatch<A> = (value: A) => void;
 
 const SideBar = ({
   rooms,
-  getRooms,
+  setRoomListData,
   selectedRoom,
   setSelectedRoom,
 }: {
   rooms: RoomType[];
   selectedRoom: string;
   setSelectedRoom: Dispatch<SetStateAction<string>>;
-  getRooms: () => void;
+  setRoomListData: () => void;
 }) => {
   const [isInputTrue, setIsInputTrue] = useState<boolean>(false);
 
@@ -54,7 +54,7 @@ const SideBar = ({
           isInputTrue={isInputTrue}
           setIsInputTrue={setIsInputTrue}
           rooms={rooms}
-          getRooms={getRooms}
+          setRoomListData={setRoomListData}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
         />
