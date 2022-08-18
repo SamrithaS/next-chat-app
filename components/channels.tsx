@@ -23,7 +23,7 @@ const Channels = ({
   const inputRef = useRef(null);
 
   const createChannel = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.target.value) {
+    if (e.key === "Enter" && e.target.value && e.target.value.trim().length) {
       const { data, error } = await supabase
         .from("rooms")
         .insert({ name: e.target.value }, { returning: "minimal" });

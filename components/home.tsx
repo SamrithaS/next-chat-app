@@ -51,7 +51,7 @@ const Home = ({
   };
 
   const handleSendMessage = async () => {
-    if (typedText !== "") {
+    if (typedText && typedText.trim().length) {
       const { error } = await supabase.from("message").insert([
         {
           content: typedText,
@@ -77,7 +77,7 @@ const Home = ({
           className="flex flex-col justify-between pt-3 px-4 pb-4 py-1"
           style={{ flex: 2 }}
         >
-          {messages && rooms ? (
+          {rooms.length ? (
             <Messages
               userID={user.id}
               messages={messages}
@@ -92,7 +92,7 @@ const Home = ({
               </p>
             </div>
           )}
-          {rooms ? (
+          {rooms.length ? (
             <div className="bg-gray-100 rounded-b-lg p-2 relative pb-3">
               <input
                 type="text"
