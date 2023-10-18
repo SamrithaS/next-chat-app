@@ -1,12 +1,19 @@
 import Nav from "./nav";
 import { supabase } from "../helpers/supabase";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { userType } from "../types/types";
 import Messages from "./messages";
 import SideBar from "./sideBar";
-import { RoomType } from "../types/types";
-import { MessageType } from "../types/types";
-import { getMessages, getRooms } from "../helpers/supabaseApiCalls";
+
+import { MessageType, ProfileType, RoomType } from "../types/types";
+import EmojiPicker from "emoji-picker-react";
+import {
+  getMessages,
+  getRooms,
+  getProfiles,
+  onSignOut,
+} from "../helpers/supabaseApiCalls";
+import { handleClickOutside } from "../helpers/outsideClick";
 
 const Home = ({
   user,
@@ -19,29 +26,21 @@ const Home = ({
   const [rooms, setRooms] = useState<RoomType[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<string>("");
   const [messages, setMessages] = useState<MessageType[]>([]);
-
+  const [profiles, setProfiles] = useState<ProfileType[]>([]);
+  const [isEmojiModalOpen, setIsEmojiModalOpen] = useState<boolean>(false);
+  const emojiRef = useRef<number | null>(null);
+  const inputRef = useRef<number | null>(null);
   const setRoomListData = async () => {
     let data = await getRooms();
     setSelectedRoom(data?.[0]?.id || "");
     setRooms(data);
   };
-
-  useEffect(() => {
-    setRoomListData();
-  }, []);
+  const setProfileData = async () => {
+    setProfiles(await getProfiles());
+  };
 
   const setMessageListData = async () => {
     setMessages(await getMessages(selectedRoom));
-  };
-
-  useEffect(() => {
-    setMessageListData();
-  }, [messageSession, selectedRoom]);
-
-  const onSignOut = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const { error } = await supabase.auth.signOut();
-    if (error) alert(error);
   };
 
   const handleEnter = async (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -63,10 +62,35 @@ const Home = ({
       if (error) alert(error);
     }
   };
+
+  useEffect(() => {
+    setRoomListData();
+    setProfileData();
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", (event) => {
+      handleClickOutside(event, emojiRef, () => {
+        setIsEmojiModalOpen(false);
+      });
+    });
+    return () => {
+      document.removeEventListener("mousedown", (event) => {
+        handleClickOutside(event, emojiRef, () => {
+          setIsEmojiModalOpen(false);
+        });
+      });
+    };
+  }, [emojiRef, setIsEmojiModalOpen]);
+
+  useEffect(() => {
+    setMessageListData();
+  }, [messageSession, selectedRoom]);
+
   return (
     <div className="h-screen">
       <Nav Name={user.user_metadata.username} onSignOut={onSignOut} />
-      <div className="bg-white max-w-5xl m-auto flex h-5/6 mt-8 rounded-2xl shadow-sm justify-between items-stretch">
+      <div className="bg-white max-w-6xl m-auto flex h-5/6 mt-8 rounded-2xl shadow-sm justify-between items-stretch">
         <SideBar
           rooms={rooms}
           setRoomListData={setRoomListData}
@@ -74,13 +98,15 @@ const Home = ({
           setSelectedRoom={setSelectedRoom}
         />
         <div
-          className="flex flex-col justify-between pt-3 px-4 pb-4 py-1"
+          className="flex flex-col justify-between pt-3 px-5 pb-4 py-1"
           style={{ flex: 2 }}
         >
           {rooms.length ? (
             <Messages
               userID={user.id}
               messages={messages}
+              profiles={profiles}
+              selectedRoom={selectedRoom}
               selectedRoomName={
                 rooms.filter((i) => selectedRoom === i.id)?.[0]?.name || ""
               }
@@ -97,32 +123,40 @@ const Home = ({
               <input
                 type="text"
                 value={typedText}
-                onKeyPress={(e) => handleEnter(e)}
+                ref={inputRef}
+                onKeyDown={(e) => handleEnter(e)}
                 autoFocus
                 onChange={(e) => setTypedText(e.target.value)}
-                className="bg-white outline-none py-2 pl-4 pr-10 rounded-3xl shadow-md w-full"
+                className="bg-white outline-none py-2 pl-4 pr-10 rounded-2xl shadow-md w-full"
               />
-              <svg
-                width="30"
-                height="20"
-                id="svg"
-                onClick={handleSendMessage}
-                className="cursor-pointer absolute right-5 top-4"
-                viewBox="0 0 61 64"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <button
+                onClick={() => {
+                  setIsEmojiModalOpen(!isEmojiModalOpen);
+                }}
               >
-                <path
-                  d="M60 1L1.5 38L24 45.5L48 20.5L32 50L57 62.5L60 1Z"
-                  fill="rgb(29 78 216)"
-                  stroke="rgb(29 78 216)"
+                <img
+                  src="emoji.svg"
+                  className="cursor-pointer absolute right-14 top-4"
                 />
-                <path
-                  d="M36.5 54L31 51.5L32 62L36.5 54Z"
-                  fill="rgb(29 78 216)"
-                  stroke="rgb(29 78 216)"
-                />
-              </svg>
+              </button>
+
+              <img
+                src="arrow.svg"
+                className="cursor-pointer absolute right-5 top-4"
+                onClick={handleSendMessage}
+              />
+
+              {isEmojiModalOpen ? (
+                <div className="absolute bottom-14 right-2 " ref={emojiRef}>
+                  <EmojiPicker
+                    onEmojiClick={(props) => {
+                      setTypedText(inputRef.current.value + props.emoji);
+                    }}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           ) : (
             <></>

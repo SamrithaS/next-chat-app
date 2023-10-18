@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { supabase } from "../helpers/supabase";
 import { RoomType } from "../types/types";
+import { createChannel } from "../helpers/supabaseApiCalls";
+import { handleClickOutside } from "../helpers/outsideClick";
 
 type SetStateAction<S> = S | ((prevState: S) => S);
 type Dispatch<A> = (value: A) => void;
@@ -22,47 +24,33 @@ const Channels = ({
 }) => {
   const inputRef = useRef(null);
 
-  const createChannel = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.target.value && e.target.value.trim().length) {
-      const { data, error } = await supabase
-        .from("rooms")
-        .insert({ name: e.target.value }, { returning: "minimal" });
-      if (!error) {
-        setRoomListData();
-      }
-      setIsInputTrue(false);
-      if (error) alert(error);
-    }
-  };
-
   useEffect(() => {
-    function handleClickOutside(event: any) {
-      if (
-        inputRef &&
-        inputRef.current &&
-        !inputRef.current.contains(event.target)
-      ) {
-        setIsInputTrue(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", (event) =>
+      handleClickOutside(event, inputRef, setIsInputTrue)
+    );
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", (event) =>
+        handleClickOutside(event, inputRef, setIsInputTrue)
+      );
     };
   }, [inputRef]);
 
   return (
-    <div className="m-2 ">
+    <div className="m-2">
       {rooms?.map((room: RoomType, id: number) => {
         return (
           <div
+            data-testid={`box`}
+            id="box"
+            draggable="true"
+            onDrag={() => {}}
             key={id}
             onClick={() => setSelectedRoom(room.id)}
-            className={`capitalize  p-3 text-gray-500 font-medium rounded-lg my-2 cursor-pointer ${
+            className={`capitalize p-3 text-gray-500 font-medium rounded-lg my-2 cursor-pointer ${
               room.id === selectedRoom ? "bg-blue-100" : "bg-gray-100 "
             }`}
           >
-            {room.name}
+            <div>{room.name}</div>
           </div>
         );
       })}
@@ -70,7 +58,7 @@ const Channels = ({
         <input
           ref={inputRef}
           className="w-full flex bg-gray-100 rounded-lg my-2 h-11 outline-0 px-3 capitalize text-gray-500 font-medium"
-          onKeyDown={(e) => createChannel(e)}
+          onKeyDown={(e) => createChannel(e, setRoomListData, setIsInputTrue)}
           autoFocus
         />
       ) : (

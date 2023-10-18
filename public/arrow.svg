@@ -1,0 +1,20 @@
+ <svg
+                width="30"
+                height="20"
+                id="svg"
+               
+                viewBox="0 0 61 64"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M60 1L1.5 38L24 45.5L48 20.5L32 50L57 62.5L60 1Z"
+                  fill="rgb(29 78 216)"
+                  stroke="rgb(29 78 216)"
+                />
+                <path
+                  d="M36.5 54L31 51.5L32 62L36.5 54Z"
+                  fill="rgb(29 78 216)"
+                  stroke="rgb(29 78 216)"
+                />
+              </svg>

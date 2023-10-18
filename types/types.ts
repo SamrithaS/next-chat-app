@@ -13,3 +13,10 @@ export type RoomType = {
   name: string;
   id: string;
 };
+
+export type ProfileType = {
+  id: string;
+  username: string;
+  uid: string;
+  email_id: string;
+};

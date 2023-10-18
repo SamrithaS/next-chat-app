@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../helpers/supabase";
 import { useRouter } from "next/router";
+import { signInUser, registerNewUser } from "../helpers/supabaseApiCalls";
 
 type Props = {
   isRegisterPage: boolean;
@@ -24,58 +25,6 @@ const Form: React.FC<Props> = ({ isRegisterPage }) => {
       email: "",
       password: "",
     });
-  };
-
-  const registerNewUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!userDetails.email || !userDetails.password || !userDetails.name) {
-      return;
-    }
-    try {
-      const { user, session, error } = await supabase.auth.signUp(
-        {
-          email: userDetails.email,
-          password: userDetails.password,
-        },
-        {
-          data: {
-            username: userDetails.name,
-          },
-        }
-      );
-      if (error) throw error;
-      const profile = await supabase
-        .from("profile")
-        .insert([{ username: userDetails.name, uid: user.id }]);
-
-      if (user && session && profile.data) {
-        router.push("/");
-      }
-
-      if (profile.error) throw profile.error;
-    } catch (error: any) {
-      alert(error.error_description || error.message);
-    } finally {
-      resetState();
-    }
-  };
-
-  const signInUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!userDetails.email || !userDetails.password) {
-      return;
-    }
-    try {
-      const { error } = await supabase.auth.signIn({
-        email: userDetails.email,
-        password: userDetails.password,
-      });
-      if (error) throw error;
-    } catch (error: any) {
-      alert(error.error_description || error.message);
-    } finally {
-      resetState();
-    }
   };
 
   return (
@@ -167,7 +116,9 @@ const Form: React.FC<Props> = ({ isRegisterPage }) => {
               <div>
                 <button
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                    isRegisterPage ? registerNewUser(e) : signInUser(e)
+                    isRegisterPage
+                      ? registerNewUser(e, userDetails, resetState, router)
+                      : signInUser(e, userDetails, resetState)
                   }
                   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
