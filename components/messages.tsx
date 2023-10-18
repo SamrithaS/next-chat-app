@@ -20,14 +20,14 @@ const Messages = ({
   selectedRoom: string;
   profiles: ProfileType[];
 }) => {
-  const memberRef = useRef<number | null>(null);
-  const allMembersRef = useRef<number | null>(null);
+  const memberRef = useRef<HTMLDivElement>(null);
+  const allMembersRef = useRef<HTMLDivElement>(null);
   const [colorState, setColorState] = useState<any>({});
   const messageRef = useRef<HTMLDivElement>(null);
   const [isMembersModalOpen, setIsMembersModalOpen] = useState<boolean>(false);
   const [isMemberListModalOpen, setisMemberListModalOpen] =
     useState<boolean>(false);
-  const [memberList, serMemberList] = useState();
+  const [memberList, serMemberList] = useState<Array<string>>();
   useEffect(() => {
     if (messageRef.current) {
       messageRef.current.scrollTop = messageRef.current.scrollHeight;

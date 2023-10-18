@@ -28,8 +28,8 @@ const Home = ({
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [profiles, setProfiles] = useState<ProfileType[]>([]);
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState<boolean>(false);
-  const emojiRef = useRef<number | null>(null);
-  const inputRef = useRef<number | null>(null);
+  const emojiRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const setRoomListData = async () => {
     let data = await getRooms();
     setSelectedRoom(data?.[0]?.id || "");

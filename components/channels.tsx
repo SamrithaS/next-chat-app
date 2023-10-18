@@ -22,7 +22,7 @@ const Channels = ({
   selectedRoom: string;
   setRoomListData: () => void;
 }) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     document.addEventListener("mousedown", (event) =>
