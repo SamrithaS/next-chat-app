@@ -114,6 +114,7 @@ export const createChannel = async (
       .insert({ name: e.target.value }, { returning: "minimal" });
     if (!error) {
       setRoomListData();
+      return data;
     }
     setIsInputTrue(false);
     if (error) alert(error);
@@ -126,4 +127,5 @@ export const addMemberToChannel = async (roomId, profileId) => {
     .insert({ room_id: roomId, profile_id: profileId });
   if (error) alert(error.message);
   else alert(`The member is added to the channel successfully`);
+  return data;
 };

@@ -27,14 +27,14 @@ const Messages = ({
   const [isMembersModalOpen, setIsMembersModalOpen] = useState<boolean>(false);
   const [isMemberListModalOpen, setisMemberListModalOpen] =
     useState<boolean>(false);
-  const [memberList, serMemberList] = useState<Array<string>>();
+  const [memberList, setMemberList] = useState<Array<string>>();
   useEffect(() => {
     if (messageRef.current) {
       messageRef.current.scrollTop = messageRef.current.scrollHeight;
     }
     let obj: any = {};
     let count = 1;
-    messages.map((i: MessageType) => {
+    messages?.map((i: MessageType) => {
       obj[i.profile_id] = getBgColor(count);
       setColorState(obj);
       count++;
@@ -42,7 +42,7 @@ const Messages = ({
   }, [messages]);
 
   const getMembersList = async () => {
-    serMemberList(await getMembers(selectedRoom));
+    setMemberList(await getMembers(selectedRoom));
   };
   useEffect(() => {
     getMembersList();
@@ -63,14 +63,14 @@ const Messages = ({
 
   return (
     <>
-      <div className="py-1 flex items-center justify-between">
-        <h2 className="text-center text-md font-medium text-gray-700 capitalize">
+      <div className="flex items-center justify-between py-1">
+        <h2 className="font-medium text-center text-gray-700 capitalize text-md">
           {selectedRoomName}
         </h2>
         <div className="flex items-center justify-between space-x-5 ">
           <div className="relative" ref={memberRef}>
             <button
-              className="flex items-start px-2 space-x-1 py-1 bg-blue-100 rounded-md justify-between "
+              className="flex items-start justify-between px-2 py-1 space-x-1 bg-blue-100 rounded-md "
               onClick={() => setIsMembersModalOpen(!isMembersModalOpen)}
             >
               <svg
@@ -89,7 +89,7 @@ const Messages = ({
                   fill="#3b82f6"
                 />
               </svg>
-              <p className="text-blue-500 font-normal text-sm">Members</p>
+              <p className="text-sm font-normal text-blue-500">Members</p>
             </button>
             {isMembersModalOpen ? (
               <MemberList
@@ -103,7 +103,7 @@ const Messages = ({
           </div>
           <div className="relative" ref={allMembersRef}>
             <button
-              className="flex items-start px-2 space-x-1 py-1 bg-blue-100 rounded-md justify-between"
+              className="flex items-start justify-between px-2 py-1 space-x-1 bg-blue-100 rounded-md"
               onClick={() => setisMemberListModalOpen(!isMemberListModalOpen)}
             >
               <svg
@@ -124,10 +124,14 @@ const Messages = ({
                 <path d="M12 0H13V5H12V0Z" fill="#4D74F9" />
                 <rect x="10" y="2" width="5" height="1" fill="#4D74F9" />
               </svg>
-              <p className="text-blue-500 font-normal text-sm">Add Members</p>
+              <p className="text-sm font-normal text-blue-500">Add Members</p>
             </button>
             {isMemberListModalOpen ? (
-              <AddMembers selectedRoom={selectedRoom} profiles={profiles} />
+              <AddMembers
+                selectedRoom={selectedRoom}
+                profiles={profiles}
+                setMemberList={setMemberList}
+              />
             ) : (
               <></>
             )}
@@ -135,12 +139,12 @@ const Messages = ({
         </div>
       </div>
       <div
-        className="overflow-scroll bg-gray-100 h-full mt-2 p-4 rounded-t-lg "
+        className="h-full p-4 mt-2 overflow-scroll bg-gray-100 rounded-t-lg "
         ref={messageRef}
       >
         <div>
           <ul id="messages">
-            {messages.map((message: MessageType, id: number) => {
+            {messages?.map((message: MessageType, id: number) => {
               return (
                 <li
                   key={id}
@@ -161,7 +165,7 @@ const Messages = ({
                   )}
                   <div>
                     {message.profile_id !== userID ? (
-                      <h4 className="text-gray-700 font-medium text-md mb-1 capitalize">
+                      <h4 className="mb-1 font-medium text-gray-700 capitalize text-md">
                         {message.profile_id !== userID
                           ? message.username
                           : "You"}

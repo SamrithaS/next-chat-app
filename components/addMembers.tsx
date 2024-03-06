@@ -1,20 +1,27 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useState } from "react";
 import { ProfileType } from "../types/types";
 import { validateEmail } from "../helpers/regex";
 import { addMemberToChannel } from "../helpers/supabaseApiCalls";
+import { getMembers } from "../helpers/supabaseApiCalls";
 const MemberList = ({
   selectedRoom,
   profiles,
+  setMemberList,
 }: {
   selectedRoom: string;
   profiles: ProfileType[];
+  setMemberList: any;
 }) => {
   const [emailId, setEmailId] = useState<string>("");
 
-  const addButtonClickHandler = () => {
+  const addButtonClickHandler = async () => {
+    let res;
     if (validateEmail(emailId)) {
       if (profiles.filter((i) => i.email_id === emailId).length > 0) {
-        addMemberToChannel(selectedRoom, profiles[0].uid);
+        res = await addMemberToChannel(selectedRoom, profiles[0].uid);
+        if (res) {
+          setMemberList(await getMembers(selectedRoom));
+        }
       } else {
         alert("Email id doesn't match");
       }
@@ -23,8 +30,8 @@ const MemberList = ({
     }
   };
   return (
-    <div className="absolute bg-white p-3 w-full rounded-b-md shadow-sm top-8 right-0 min-w-max outline-none cursor-auto">
-      <p className="text-left text-sm font-medium text-gray-500 capitalize pb-2">
+    <div className="absolute right-0 w-full p-3 bg-white shadow-sm outline-none cursor-auto rounded-b-md top-8 min-w-max">
+      <p className="pb-2 text-sm font-medium text-left text-gray-500 capitalize">
         email id{" "}
       </p>
       <div className="flex">
@@ -33,7 +40,7 @@ const MemberList = ({
           onChange={(e) => {
             setEmailId(e.target.value);
           }}
-          className="outline-none px-3 py-2 rounded-md bg-gray-100 shadow-sm w-full text-sm font-medium text-gray-500 "
+          className="w-full px-3 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-md shadow-sm outline-none "
           onKeyDown={(e) => {
             if (e.key === "Enter") addButtonClickHandler();
           }}

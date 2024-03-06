@@ -35,6 +35,13 @@ const Channels = ({
     };
   }, [inputRef]);
 
+  const handleRoom = async (event) => {
+    let res = await createChannel(event, setRoomListData, setIsInputTrue);
+    if (res) {
+      // setSelectedRoom(event.target.value);
+    }
+  };
+
   return (
     <div className="m-2">
       {rooms?.map((room: RoomType, id: number) => {
@@ -57,8 +64,8 @@ const Channels = ({
       {isInputTrue ? (
         <input
           ref={inputRef}
-          className="w-full flex bg-gray-100 rounded-lg my-2 h-11 outline-0 px-3 capitalize text-gray-500 font-medium"
-          onKeyDown={(e) => createChannel(e, setRoomListData, setIsInputTrue)}
+          className="flex w-full px-3 my-2 font-medium text-gray-500 capitalize bg-gray-100 rounded-lg h-11 outline-0"
+          onKeyDown={(e) => handleRoom(e)}
           autoFocus
         />
       ) : (
