@@ -113,17 +113,19 @@ export const createChannel = async (
   setRoomListData: () => void,
   setIsInputTrue: (i: boolean) => void
 ) => {
+  let res;
   if (e.key === "Enter" && e.target.value && e.target.value.trim().length) {
     const { data, error } = await supabase
       .from("rooms")
       .insert({ name: e.target.value }, { returning: "minimal" });
     if (!error) {
       setRoomListData();
-      return data;
+      res = data;
     }
     setIsInputTrue(false);
     if (error) alert(error);
   }
+  return res;
 };
 
 export const addMemberToChannel = async (roomId, profileId) => {

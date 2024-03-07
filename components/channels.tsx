@@ -38,6 +38,7 @@ const Channels = ({
   const handleRoom = async (event) => {
     let res = await createChannel(event, setRoomListData, setIsInputTrue);
     if (res) {
+      setIsInputTrue(false);
       // setSelectedRoom(event.target.value);
     }
   };
