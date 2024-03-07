@@ -96,8 +96,6 @@ export const registerNewUser = async (
       },
     ]);
 
-    console.log("rpfo", user, session, profile);
-
     if (user && session && profile.data) {
       router.push("/");
     }
