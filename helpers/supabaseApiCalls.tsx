@@ -12,9 +12,14 @@ export const getMessages = async (
   return data;
 };
 
-export const getRooms = async (): Promise<RoomType[]> => {
-  const { data } = await supabase.from("rooms").select("*");
-  return data;
+export const getRooms = async (userId): Promise<RoomType[]> => {
+  // const { data } = await supabase.from("rooms").select("*");
+  const { data } = await supabase
+    .from("room_participant")
+    .select(`room_id (*)`)
+    .eq("profile_id", userId);
+
+  return data?.flat()?.map((item) => item?.room_id);
 };
 
 export const getMembers = async (selectedRoom: string) => {
@@ -90,6 +95,8 @@ export const registerNewUser = async (
         email_id: userDetails.email,
       },
     ]);
+
+    console.log("rpfo", user, session, profile);
 
     if (user && session && profile.data) {
       router.push("/");

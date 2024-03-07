@@ -17,8 +17,9 @@ const MemberList = ({
   const addButtonClickHandler = async () => {
     let res;
     if (validateEmail(emailId)) {
-      if (profiles.filter((i) => i.email_id === emailId).length > 0) {
-        res = await addMemberToChannel(selectedRoom, profiles[0].uid);
+      let filteredProfiles = profiles.filter((i) => i.email_id === emailId);
+      if (filteredProfiles.length > 0) {
+        res = await addMemberToChannel(selectedRoom, filteredProfiles[0].uid);
         if (res) {
           setMemberList(await getMembers(selectedRoom));
         }
@@ -45,7 +46,6 @@ const MemberList = ({
             if (e.key === "Enter") addButtonClickHandler();
           }}
         />
-        {/* <button onClick={addButtonClickHandler}>add</button> */}
       </div>
     </div>
   );

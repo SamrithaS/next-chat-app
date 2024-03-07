@@ -30,8 +30,9 @@ const Home = ({
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState<boolean>(false);
   const emojiRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
   const setRoomListData = async () => {
-    let data = await getRooms();
+    let data = await getRooms(user?.id);
     setSelectedRoom(data?.[0]?.id || "");
     setRooms(data);
   };
@@ -90,7 +91,7 @@ const Home = ({
   return (
     <div className="h-screen">
       <Nav Name={user.user_metadata.username} onSignOut={onSignOut} />
-      <div className="bg-white max-w-6xl m-auto flex h-5/6 mt-8 rounded-2xl shadow-sm justify-between items-stretch">
+      <div className="flex items-stretch justify-between max-w-6xl m-auto mt-8 bg-white shadow-sm h-5/6 rounded-2xl">
         <SideBar
           rooms={rooms}
           setRoomListData={setRoomListData}
@@ -98,10 +99,10 @@ const Home = ({
           setSelectedRoom={setSelectedRoom}
         />
         <div
-          className="flex flex-col justify-between pt-3 px-5 pb-4 py-1"
+          className="flex flex-col justify-between px-5 py-1 pt-3 pb-4"
           style={{ flex: 2 }}
         >
-          {rooms.length ? (
+          {rooms?.length ? (
             <Messages
               userID={user.id}
               messages={messages}
@@ -112,14 +113,14 @@ const Home = ({
               }
             />
           ) : (
-            <div className="flex items-center justify-center bg-gray-100 h-full">
+            <div className="flex items-center justify-center h-full bg-gray-100">
               <p className="text-2xl font-normal text-gray-400">
                 Create a room to chat
               </p>
             </div>
           )}
-          {rooms.length ? (
-            <div className="bg-gray-100 rounded-b-lg p-2 relative pb-3">
+          {rooms?.length ? (
+            <div className="relative p-2 pb-3 bg-gray-100 rounded-b-lg">
               <input
                 type="text"
                 value={typedText}
@@ -127,7 +128,7 @@ const Home = ({
                 onKeyDown={(e) => handleEnter(e)}
                 autoFocus
                 onChange={(e) => setTypedText(e.target.value)}
-                className="bg-white outline-none py-2 pl-4 pr-10 rounded-2xl shadow-md w-full"
+                className="w-full py-2 pl-4 pr-10 bg-white shadow-md outline-none rounded-2xl"
               />
               <button
                 onClick={() => {
@@ -136,13 +137,13 @@ const Home = ({
               >
                 <img
                   src="emoji.svg"
-                  className="cursor-pointer absolute right-14 top-4"
+                  className="absolute cursor-pointer right-14 top-4"
                 />
               </button>
 
               <img
                 src="arrow.svg"
-                className="cursor-pointer absolute right-5 top-4"
+                className="absolute cursor-pointer right-5 top-4"
                 onClick={handleSendMessage}
               />
 
